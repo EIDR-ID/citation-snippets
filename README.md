@@ -21,6 +21,7 @@ Usage would look like:
 
 
 const { cite } = require('./citation');
+
 let citation = await cite(records, style, locale)
 
 If the records are in CLS JSON format, then the library can used as is. If the records are not, the user must 
