@@ -3,7 +3,7 @@
 This commonJS module is ready to use in NodeJS projects that wishes to generate citations
 
 
-Requires https://github.com/Juris-M/citeproc-js/blob/master/citeproc_commonjs.js as a dependency
+Requires [citeproc-js](https://github.com/Juris-M/citeproc-js/blob/master/citeproc_commonjs.js) as a dependency
 
 
 The citation tool needs both a locale configuration and a style configuration; The code snippet will attempt to get these configurations locally 
