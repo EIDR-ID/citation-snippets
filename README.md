@@ -1,4 +1,4 @@
-# snippets
+# Citation.js
 
 This commonJS module is ready to use in NodeJS projects that wishes to generate citations
 
