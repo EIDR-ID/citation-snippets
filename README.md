@@ -3,7 +3,7 @@
 This commonJS module is ready to use in NodeJS projects that wishes to generate citations
 
 
-Requires [citeproc-js](https://github.com/Juris-M/citeproc-js/blob/master/citeproc_commonjs.js) as a dependency
+Requires [citeproc_commonjs](https://github.com/Juris-M/citeproc-js/blob/master/citeproc_commonjs.js) as a dependency
 
 
 The citation tool needs both a locale configuration and a style configuration; The code snippet will attempt to get these configurations locally 
@@ -28,5 +28,5 @@ If the records are in CLS JSON format, then the library can used as is. If the r
 fill in their own conversion function in the generateClsFromRecord section.
 
 
-This snippet simply packages the demo code and adds a few more capabilities
 Credit goes to https://citeproc-js.readthedocs.io/en/latest/deployments.html
+This snippet simply packages the demo code and adds a few more capabilities
