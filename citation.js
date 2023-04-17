@@ -64,7 +64,10 @@ function retrieveLocale(locale) {
         var xhr = new XMLHttpRequest();
         xhr.open('GET', 'https://raw.githubusercontent.com/Juris-M/citeproc-js-docs/master/locales-' + locale + '.xml', false);
         xhr.send(null);
-        localeAsText = xhr.responseText;
+
+        if (xhr.status < 400) {
+            localeAsText = xhr.responseText;
+        }
     }
 
     if (!localeAsText) {
@@ -98,7 +101,10 @@ async function getProcessor(citeprocSys, style) {
         xhr.open('GET', 'https://raw.githubusercontent.com/citation-style-language/styles/master/' + style + '.csl', false);
         xhr.open('GET', './citation_styles/' + style + '.csl', false);
         xhr.send(null);
-        styleAsText = xhr.responseText;
+
+        if (xhr.status < 400) {
+            localeAsText = xhr.responseText;
+        }
     }
 
     if (!styleAsText) {
