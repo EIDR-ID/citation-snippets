@@ -1,6 +1,6 @@
 # Citation.js
 
-This commonJS module is ready to use in NodeJS projects that wishes to generate citations
+This commonJS module is ready to use in NodeJS projects that wishes to generate citations from a native record
 
 
 Requires [citeproc_commonjs](https://github.com/Juris-M/citeproc-js/blob/master/citeproc_commonjs.js) as a dependency
@@ -18,7 +18,6 @@ and
 
 
 Usage would look like:
-
 
 const { cite } = require('./citation');
 
