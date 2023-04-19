@@ -123,6 +123,19 @@ async function processorOutput(citeprocSys, style, ids) {
     return result[1].join('\n');
 }
 
+module.exports.convertToCslJson = function (records) {
+    if (!records) {
+        return new Error('No records to convert');
+    }
+    let isArray = Array.isArray(records);
+    let results = generateClsFromRecord(isArray ? records : [records]);
+    if (results) {
+        return results;
+    } else {
+        return new Error('Record conversion failed.');
+    }
+}
+
 module.exports.cite = async function (records, style, locale) {
     if (!records) {
         return new Error(`No available records to cite.`);
