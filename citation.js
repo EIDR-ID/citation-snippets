@@ -79,8 +79,8 @@ function retrieveLocale(locale) {
 
 function generateClsJsonMap(clsRecord) {
     let citations = {}
-    for (var i = 0, ilen = clsRecord.items.length; i < ilen; i++) {
-        var item = clsRecord.items[i];
+    for (var i = 0, ilen = clsRecord.length; i < ilen; i++) {
+        var item = clsRecord[i];
         if (!item.issued) continue;
         if (item.URL) delete item.URL;
         var id = item.id;
@@ -120,7 +120,7 @@ async function processorOutput(citeprocSys, style, ids) {
     var citeproc = await getProcessor(citeprocSys, style);
     citeproc.updateItems(ids);
     var result = citeproc.makeBibliography();
-    return result[1].join('\n');
+    return result[1];
 }
 
 module.exports.convertToCslJson = function (records) {
@@ -136,7 +136,7 @@ module.exports.convertToCslJson = function (records) {
     }
 }
 
-module.exports.cite = async function (records, style, locale) {
+module.exports.cite = async function (records, style, locale, citationHTML) {
     if (!records) {
         return new Error(`No available records to cite.`);
     }
@@ -145,7 +145,7 @@ module.exports.cite = async function (records, style, locale) {
     let isArray = Array.isArray(records);
     let clsRecords = generateClsFromRecord(isArray ? records : [records]);
 
-    if (!clsRecords?.items?.length) {
+    if (!clsRecords?.length) {
         return new Error(`No valid records to cite.`);
     }
 
@@ -161,7 +161,16 @@ module.exports.cite = async function (records, style, locale) {
 
     try {
         let result = await processorOutput(citeprocSys, style, Object.keys(clsMappedRecords));
-        return result;
+        if (result?.length) {
+            if (!citationHTML || citationHTML === 'false') {
+                result = result.map(citeHTML => {
+                    return removeTags(citeHTML)
+                })
+            }
+            return isArray ? result : result[0];
+        } else {
+            return null;
+        }
     } catch (ex) {
         return new Error(`Something went wrong while generating citations. ${ex}`);
     }
