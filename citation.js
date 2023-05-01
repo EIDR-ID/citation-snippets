@@ -229,6 +229,7 @@ function removeTags(str) {
 }
 
 module.exports.cite = async function (records, style, locale, html) {
+    console.log(111, html)
     if (!records) {
         return new Error(`No available records to cite.`);
     }
