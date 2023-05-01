@@ -43,6 +43,7 @@ function generateClsFromRecord(records) {
     // https://citeproc-js.readthedocs.io/en/latest/csl-json/markup.html
 
 
+    // The following example converts an EIDR record to CSL JSON format
     // EXAMPLE START ***********************************************************
     if (records?.length) {
 
