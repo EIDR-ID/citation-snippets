@@ -42,6 +42,87 @@ function generateClsFromRecord(records) {
     // Further instructions
     // https://citeproc-js.readthedocs.io/en/latest/csl-json/markup.html
 
+
+    // EXAMPLE START ***********************************************************
+    if (records?.length) {
+
+        function generateName(nameStr, literal) {
+            if (literal) {
+                return {
+                    literal: nameStr
+                }
+            } else {
+                let nameArr = nameStr.split(' ')
+                let lastName = nameArr.pop();
+                return {
+                    family: lastName,
+                    given: nameArr?.join(' ') || null
+                }
+            }
+        }
+
+        function generateDate(date) {
+            if (date) {
+                return {
+                    // raw: date
+                    'date-parts': [
+                        date.split('-')
+                    ]
+                }
+            }
+        }
+
+        function getProducer(eidrRecord) {
+            let producers = eidrRecord?.AssociatedOrg?.filter(org => org._role === 'producer' && org.DisplayName)
+                .map(producer => {
+                    return {
+                        literal: producer.DisplayName
+                    }
+                });
+
+            if (producers?.length) {
+                return producers;
+            } else {
+                return null;
+            }
+        }
+
+        function getSeason(eidrRecord) {
+            return eidrRecord?.ExtraObjectMetadata?.SeasonInfo?.SequenceNumber;
+        }
+
+        function getEpisode(eidrRecord) {
+            return eidrRecord?.ExtraObjectMetadata?.EpisodeInfo?.SequenceInfo?.DistributionNumber?.value;
+        }
+
+        function removeEmptyFields(obj) {
+            return Object.fromEntries(Object.entries(obj).filter(([_, v]) => v != null));
+        }
+
+        convertedRecords = records.map((eidrRecord) => {
+            // https://github.com/citation-style-language/schema/blob/master/schemas/input/csl-data.json
+            let item = {
+                id: eidrRecord.ID,
+                type: 'motion_picture',
+                title: eidrRecord.ResourceName?.value,
+                DOI: eidrRecord.ID,
+                performer: eidrRecord.Credits?.Actor?.map(actor => generateName(actor.DisplayName)),
+                author: eidrRecord.Credits?.Director?.map(director => generateName(director.DisplayName)),
+                director: eidrRecord.Credits?.Director?.map(director => generateName(director.DisplayName)),
+                producer: getProducer(eidrRecord),
+                language: eidrRecord.OriginalLanguage?.value,
+                issued: generateDate(eidrRecord.ReleaseDate),
+                season: getSeason(eidrRecord),
+                episode: getEpisode(eidrRecord)
+            }
+            return removeEmptyFields(item);
+        })
+
+        return convertedRecords;
+    }
+    // EXAMPLE END ********************************************************
+
+
     return convertedRecords;
 
 }
@@ -136,7 +217,18 @@ module.exports.convertToCslJson = function (records) {
     }
 }
 
-module.exports.cite = async function (records, style, locale, citationHTML) {
+function removeTags(str) {
+    if ((str === null) || (str === ''))
+        return false;
+    else
+        str = str.toString();
+    // Regular expression to identify HTML tags in
+    // the input string. Replacing the identified
+    // HTML tag with a null string.
+    return str.replace(/(<([^>]+)>)/ig, '').trim().replace('\n', '');
+}
+
+module.exports.cite = async function (records, style, locale, html) {
     if (!records) {
         return new Error(`No available records to cite.`);
     }
@@ -162,7 +254,7 @@ module.exports.cite = async function (records, style, locale, citationHTML) {
     try {
         let result = await processorOutput(citeprocSys, style, Object.keys(clsMappedRecords));
         if (result?.length) {
-            if (!citationHTML || citationHTML === 'false') {
+            if (!html) {
                 result = result.map(citeHTML => {
                     return removeTags(citeHTML)
                 })
