@@ -28,6 +28,7 @@ fill in their own conversion function in the generateClsFromRecord section.
 
 
 This project is a fully functioning nodejs example. Simply run node index.js and then run 
+
 curl --location 'localhost:3000' --header 'Accept: style=apa;locale=es-ES'
 
 Credit goes to https://citeproc-js.readthedocs.io/en/latest/deployments.html
